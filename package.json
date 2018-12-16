@@ -5,7 +5,8 @@
   "requires": true,
   "lockfileVersion": 1,
   "engines":{
-  	"node:":"8.11.3"
+  	"node":"8.11.3",
+  	"npm":"5.6.0"
   },
   "dependencies": {
     "ajv": {
