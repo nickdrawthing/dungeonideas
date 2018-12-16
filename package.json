@@ -4,6 +4,9 @@
   "version":"1.0.0",
   "requires": true,
   "lockfileVersion": 1,
+  "engines":{
+  	"node:":"8.11.3"
+  },
   "dependencies": {
     "ajv": {
       "version": "6.6.1",
