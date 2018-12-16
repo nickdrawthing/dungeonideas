@@ -1,10 +1,3 @@
-/*
-
-TO DO:
-Flood fill from "Important" rooms to ensure no direct paths to exit.
-
-*/
-
 var Twit = require('twit')
  
 var T = new Twit({
