@@ -1,4 +1,4 @@
-var Twit = require('Twit');
+var Twit = require('./node_modules/twit');
  
 var T = new Twit({
   consumer_key:         'N13WiJKUKOIDXVnefYTOT78lW',
