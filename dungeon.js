@@ -29,24 +29,22 @@ var roomList = [
 	,"Animal Pens"
 	,"Altar"
 	,"Lab"
-	,"Training Room"
 	,"Kitchens"
 	,"Stalagmites"
 	,"Natural Spring"
 	,"Treasure Room"
 	,"Animal Den"
-	,"Entrance to Underdark"
 	,"Ceremonial Chamber"
 	,"Mess Hall"
 	,"Prison Cells"
 	,"Crystal Caverns"
 	,"Armoury"
 	,'Mushroom Farm'
+	,"Cave-In"
 ];
 
 var goodRooms = [
 	"Scriptorium"
-	,"Music Hall"
 	,"Temple"
 	,"Knitting Room"
 	,"Fitting Room"
@@ -59,6 +57,41 @@ var badRooms = [
 	,"Torture Chamber"
 	,"Zombie Pens"
 	,"War Room"
+	,"Pit Trap"
+	,"Entrance to Underdark"
+	,"Rune of Exploding"
+	,"Spike Trap"
+	,"Falling Boulder Trap"
+];
+
+var inhabitants = [
+	{name:"Humans",rooms:["Tapestrorium"]},
+	{name:"Dwarves",rooms:["Mining Supply Room","Larder"]},
+	{name:"Elves",rooms:["Sun Chamber","Brewery","Library","Poetorium"]},
+	{name:"Barbarians",rooms:["Shouting Chamber","Wrestling Mats"]},
+	{name:"Wizards",rooms:["Library", "Arcanum"]},
+	{name:"Knights",rooms:["Training Room"]}
+
+];
+
+var goodInhabitants =[
+	{name:"Hobbits",rooms:["Brewery","Root Cellar","Larder","Washing Room"]},
+	{name:"Gnomes",rooms:["Tinkery"]},
+	{name:"Bards",rooms:["Music Hall","Bandstand"]},
+	{name:"Clerics",rooms:["Prayer Alcove"]}
+];
+
+var badInhabitants = [
+	{name:"Drow",rooms:["Spider Hatchery"]},
+	{name:"Goblins",rooms:["Spawning Pit"]},
+	{name:"Orcs",rooms:["Slave Pens","Gruumsh Altar"]},
+	{name:"Duergar",rooms:["Slave Pens"]},
+	{name:"Vampires",rooms:["Mausoleum","Crypt"]},
+	{name:"Necromancers",rooms:["Cold Storage","Skeleton Hole"]},
+	{name:"Mind Flayers",rooms:["Brain Pit","Scrying Pool"]},
+	{name:"SnakeFolk",rooms:["Egg Hatchery"]},
+	{name:"FrogFolk",rooms:["Slimatorim","Spawning Pits"]},
+	{name:"Kobolds",rooms:["Fire Pit Trap","Rolling Log Trap","Blowdart Trap"]}
 ];
 
 // var imgWall = "██";
@@ -73,6 +106,10 @@ var imgDoor = "🚪";
 // var imgSecret = "$$";
 var imgSecret = "◾";
 
+var imgUp = "⏫";
+
+var imgDown = "⏬";
+
 function displayDungeon(dungeon){	
 	// creates strings that use emojis to depict the dungeon layout 
 	for (var i = 0; i < dungeon.length; i++){
@@ -84,7 +121,7 @@ function displayDungeon(dungeon){
 			} else if (dungeon[i][j] == 0){
 				thisCellFill = imgWall;
 			} else if (dungeon[i][j] == "D"){
-				thisCellFill = aRand([imgDoor,imgSecret]);
+				thisCellFill = aRand([imgDoor,imgSecret,imgUp,imgDown]);
 			} else {
 				// thisCellFill = "" + (dungeon[i][j]-1) + (dungeon[i][j]-1);
 				thisCellFill = "" + (dungeon[i][j]-1) +"⃣";
@@ -107,7 +144,7 @@ function twtDungeon(dungeon, num){
 			} else if (dungeon[i][j] == 0){
 				thisCellFill = imgWall;
 			} else if (dungeon[i][j] == "D"){
-				thisCellFill = aRand([imgDoor,imgSecret]);
+				thisCellFill = aRand([imgDoor,imgSecret,imgUp,imgDown]);
 			} else {
 				// thisCellFill = "" + (dungeon[i][j]-1) + (dungeon[i][j]-1);
 				thisCellFill = "" + (dungeon[i][j]-1) +"⃣";
@@ -120,6 +157,7 @@ function twtDungeon(dungeon, num){
 	  console.log(data);
 	  id = data.id_str;
 	  twtNameList(id,num);
+	  // twtNameList(asciiDung,num);
 	})
 }
 
@@ -256,31 +294,49 @@ function createNameList(num){
 }
 
 function twtNameList(id, num){
+// function twtNameList(status,num){
 	var status = "";
 	var whichOverall = overallDescriptions[Math.floor(Math.random()*overallDescriptions.length)];
 	status += "General Aesthetic: " + whichOverall + "\n";
 
 	let rnd = Math.random();
-	if (rnd < .4){
-		roomList = roomList.concat(goodRooms);
-	} else if (rnd >= 0.4 && rnd < 0.8){
-		roomList = roomList.concat(badRooms);
+	let thisRoomList;
+	let thisInhabitants;
+	if (rnd < 0.475){
+		thisRoomList = roomList.concat(goodRooms);
+		thisInhabitants = inhabitants.concat(goodInhabitants);
+		console.log("Good");
+	} else if (rnd >= 0.475 && rnd < 0.95){
+		thisRoomList = roomList.concat(badRooms);
+		thisInhabitants = inhabitants.concat(badInhabitants);
+		console.log("Evil");
 	} else {
-		roomList = roomList.concat(goodRooms);
-		roomList = roomList.concat(badRooms);
+		thisRoomList = roomList.concat(goodRooms);
+		thisRoomList = thisRoomList.concat(badRooms);
+		thisInhabitants = inhabitants.concat(goodInhabitants);
+		thisInhabitants = thisInhabitants.concat(goodInhabitants);
+		console.log("Mix");
 	}
 
-	roomList = shuffle(roomList);
+	thisInhabitants = shuffle(thisInhabitants);
+	thisRoomList = thisRoomList.concat(thisInhabitants[0].rooms);
+
+	status += "Inhabitants: " + thisInhabitants[0].name + "\n";
+
+	thisRoomList = shuffle(thisRoomList);
 	for (let i = 0; i < Math.min(num,9); i ++){
-		status += ((i+1) + ": " + roomList[i]) + "\n";
+		status += ((i+1) + ": " + thisRoomList[i]) + "\n";
 	}
+	console.log(status);
 	T.post('statuses/update', { in_reply_to_status_id: id, status: status }, function(err, data, response) {
-		// console.log(response);
+	// T.post('statuses/update', { status: status }, function(err, data, response) {
+		if (err){console.log(err)}
+		console.log(response);
 	})
 }
 
 function addDoors(dun){
-	var doors = Math.floor(Math.random()*3)+1;
+	var doors = Math.floor(Math.random()*4)+1;
 	var its = 1000;
 	while (doors > 0 && its > 0){
 		its--;
