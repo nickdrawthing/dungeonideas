@@ -447,7 +447,7 @@ function trimDungeon(dun){
 
 function main(){
 
-	var dungeonsize = Math.floor(Math.random()*3)+8;
+	var dungeonsize = Math.floor(Math.random()*5)+8;
 	var dungeon = [];
 	var roomList = [];
 	for (var i = 0; i < dungeonsize; i++){
@@ -485,5 +485,5 @@ var minute = second*60;
 var hour = minute * 60;
 var day = hour * 24;
 
-main();
+// main();
 setInterval(main,hour * 6); // creates a new one every minute
