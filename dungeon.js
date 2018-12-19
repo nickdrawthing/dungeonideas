@@ -154,9 +154,11 @@ function twtDungeon(dungeon, num){
 		asciiDung += "\n";
 	}
 	T.post('statuses/update', { status: asciiDung }, function(err, data, response) {
-	  console.log(data);
-	  id = data.id_str;
-	  twtNameList(id,num);
+		console.log(err);
+		//console.log(data);
+		if (data.id_str != undefined){
+			twtNameList(data.id_str,num);
+		}
 	  // twtNameList(asciiDung,num);
 	})
 }
@@ -359,6 +361,45 @@ function addDoors(dun){
 	return dun;
 }
 
+function checkNums(dun, rms){
+	console.log("Checking for continuous room values");
+	var numOffset = 0;//amount by which subsequent nums will be subtracted
+	for (var i = 0; i < rms.length; i++){
+		var found = false;
+		//searches all squares for the next room number
+		for (var m = 0; m < dun.length; m++){
+			for (var n = 0; n < dun[m].length; n++){
+				if (dun[m][n] == i+2){
+					found = true;
+					//offsets this square by the offset value (hopefully 0)
+					dun[m][n] -= numOffset;
+				}
+			}
+		}
+		if (!found){
+			numOffset++;
+			console.log("UH OH, MISSING ROOM! STEPS TAKEN.");
+		}
+	}
+	return dun;
+}
+
+function checkRoomList(dun,rms){
+	console.log("Checking Room List Length");
+	var highestNum = 0;
+	for (var i = 0; i < dun.length; i++){
+		for (var j = 0; j < dun[i].length; j++){
+			if (!isNaN(dun[i][j])){
+				if (dun[i][j] > highestNum){
+					highestNum = dun[i][j];
+				}
+			}
+		}
+	}
+	rms.length = highestNum-1;
+	return rms;
+}
+
 function doorFill(dun){
 	var x = 0; 
 	var y = 0;
@@ -471,7 +512,8 @@ function main(){
 	}
 	
 	dungeon = connectRooms(dungeon, roomList);
-	dungeon = addDoors(dungeon);
+	dungeon = addDoors(dungeon);	dungeon = checkNums(dungeon, roomList);
+	roomList = checkRoomList(dungeon,roomList);
 	dungeon = trimDungeon(dungeon);
 
 	displayDungeon(dungeon);
