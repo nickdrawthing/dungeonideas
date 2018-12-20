@@ -36,11 +36,12 @@ var roomList = [
 	,"Animal Den"
 	,"Ceremonial Chamber"
 	,"Mess Hall"
-	,"Prison Cells"
 	,"Crystal Caverns"
 	,"Armoury"
 	,'Mushroom Farm'
 	,"Cave-In"
+	,"Moss"
+	,"Tree Root Tangle"
 ];
 
 var goodRooms = [
@@ -50,6 +51,8 @@ var goodRooms = [
 	,"Fitting Room"
 	,"Sitting Room"
 	,"Infirmary"
+	,"Spare Bedrooms"
+	,"Looking Pools"
 ];
 var badRooms = [
 	"Blood Pools"
@@ -70,7 +73,9 @@ var inhabitants = [
 	{name:"Elves",rooms:["Sun Chamber","Brewery","Library","Poetorium"]},
 	{name:"Barbarians",rooms:["Shouting Chamber","Wrestling Mats"]},
 	{name:"Wizards",rooms:["Library", "Arcanum"]},
-	{name:"Knights",rooms:["Training Room"]}
+	{name:"Knights",rooms:["Training Room","Prison Cells"]},
+	{name:"Rangers",rooms:["Fletchery","Map Room"]},
+	{name:"Druids",rooms:["Nursery","Tannery"]}
 
 ];
 
@@ -78,6 +83,7 @@ var goodInhabitants =[
 	{name:"Hobbits",rooms:["Brewery","Root Cellar","Larder","Washing Room"]},
 	{name:"Gnomes",rooms:["Tinkery"]},
 	{name:"Bards",rooms:["Music Hall","Bandstand"]},
+	{name:"Outcasts",rooms:[]},
 	{name:"Clerics",rooms:["Prayer Alcove"]}
 ];
 
@@ -90,8 +96,17 @@ var badInhabitants = [
 	{name:"Necromancers",rooms:["Cold Storage","Skeleton Hole"]},
 	{name:"Mind Flayers",rooms:["Brain Pit","Scrying Pool"]},
 	{name:"SnakeFolk",rooms:["Egg Hatchery"]},
-	{name:"FrogFolk",rooms:["Slimatorim","Spawning Pits"]},
+	{name:"Bullywugs",rooms:["Slimatorim","Spawning Pits"]},
+	{name:"Azers",rooms:["Volcanic Vent","Lava Pool","Bronze Smelter","Bronze Vein"]},
+	{name:"Beholder",rooms:["Slave Pens","Bone Pile","Scrivenry"]},
+	{name:"Cyclops",rooms:["Meat Pile","Huge Rope Coils"]},
+	{name:"Lich",rooms:["Phylactorium","Alchemical Laboratory","Throne Room"]},
+	{name:"Demons",rooms:["Blood Pots","Hellmouth","Scrying Runes"]},
+	{name:"Dragon",rooms:["Gold Hoard","Acid Pit","Overgrowth"]},
+	{name:"Gnolls",rooms:["Scrap Heap","Hyena Den","Demonic Corruption"]},
+	{name:"Bandits",rooms:["Prison"]},
 	{name:"Kobolds",rooms:["Fire Pit Trap","Rolling Log Trap","Blowdart Trap"]}
+
 ];
 
 // var imgWall = "██";
@@ -263,16 +278,37 @@ function connectRooms(dungeon, roomList){
 	return dungeon;
 }
 
-function shuffle(a) {
-    var j, x, i;
-    for (i = a.length - 1; i > 0; i--) {
-        j = Math.floor(Math.random() * (i + 1));
-        x = a[i];
-        a[i] = a[j];
-        a[j] = x;
-    }
-    return a;
-}
+// function shuffle(a) {
+//     var j, x, i;
+//     for (i = a.length - 1; i > 0; i--) {
+//         j = Math.floor(Math.random() * (i + 1));
+//         x = a[i];
+//         a[i] = a[j];
+//         a[j] = x;
+//     }
+//     return a;
+// }
+
+var shuffle = function (array) {
+
+	var currentIndex = array.length;
+	var temporaryValue, randomIndex;
+
+	// While there remain elements to shuffle...
+	while (0 !== currentIndex) {
+		// Pick a remaining element...
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex -= 1;
+
+		// And swap it with the current element.
+		temporaryValue = array[currentIndex];
+		array[currentIndex] = array[randomIndex];
+		array[randomIndex] = temporaryValue;
+	}
+
+	return array;
+
+};
 
 function createNameList(num){
 
@@ -304,11 +340,11 @@ function twtNameList(id, num){
 	let rnd = Math.random();
 	let thisRoomList;
 	let thisInhabitants;
-	if (rnd < 0.475){
+	if (rnd < 0.275){
 		thisRoomList = roomList.concat(goodRooms);
 		thisInhabitants = inhabitants.concat(goodInhabitants);
 		console.log("Good");
-	} else if (rnd >= 0.475 && rnd < 0.95){
+	} else if (rnd >= 0.275 && rnd < 0.95){
 		thisRoomList = roomList.concat(badRooms);
 		thisInhabitants = inhabitants.concat(badInhabitants);
 		console.log("Evil");
